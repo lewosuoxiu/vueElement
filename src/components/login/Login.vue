@@ -34,18 +34,12 @@ export default {
         }
     },
     methods: {
-        handleLogin() {
-          this.$http.post('login', this.formdata).then(res => {
-            console.log(res)
-             // 对象的解构赋值
-            const {
-              data, 
-              meta: {msg, status}
-              } = res.data
+      // 用async 和await代码简写异步方法
+        async handleLogin() {
+          const res = await this.$http.post('login', this.formdata)
+          console.log(res);
 
-            // 下面的思路：
-            //   如果登陆成功：1，跳转home页；2，提示成功
-            //   else 不成功：1，提示消息
+          const {data, meta: {msg, status}} = res.data
 
            if (status === 200) {
             //  如果登陆成功：1，跳转home页；2，提示成功
@@ -55,9 +49,32 @@ export default {
             //   else 不成功：1，提示消息
             this.$message.warning(msg);
            }
+          
 
 
-          })
+          // this.$http.post('login', this.formdata).then(res => {
+          //   console.log(res)
+          //    // 对象的解构赋值
+          //   const {
+          //     data, 
+          //     meta: {msg, status}
+          //     } = res.data
+
+          //   // 下面的思路：
+          //   //   如果登陆成功：1，跳转home页；2，提示成功
+          //   //   else 不成功：1，提示消息
+
+          //  if (status === 200) {
+          //   //  如果登陆成功：1，跳转home页；2，提示成功
+          //    this.$router.push({name: 'home'}) //编程式导航
+          //    this.$message.success(msg);
+          //  } else {
+          //   //   else 不成功：1，提示消息
+          //   this.$message.warning(msg);
+          //  }
+
+
+          // })
         }
     }
 };
