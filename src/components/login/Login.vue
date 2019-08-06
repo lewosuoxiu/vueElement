@@ -49,7 +49,7 @@ export default {
 
            if (status === 200) {
             //  如果登陆成功：1，跳转home页；2，提示成功
-            // this.$router.push({name: 'home'}) //编程式导航
+             this.$router.push({name: 'home'}) //编程式导航
              this.$message.success(msg);
            } else {
             //   else 不成功：1，提示消息
