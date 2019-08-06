@@ -37,14 +37,14 @@ export default {
       // 用async 和await代码简写异步方法
         async handleLogin() {
           const res = await this.$http.post('login', this.formdata)
-          console.log(res);
+          // console.log(res);
 
           const {data, meta: {msg, status}} = res.data
 
            if (status === 200) {
             //  登陆成功,保存token值
             localStorage.setItem('token', data.token)
-            
+
             //  如果登陆成功：1，跳转home页；2，提示成功
              this.$router.push({name: 'home'}) //编程式导航
              this.$message.success(msg);
