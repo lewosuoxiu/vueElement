@@ -113,7 +113,27 @@
 </template>
 
 <script>
-export default {};
+export default {
+  // 获取token
+  // 判断token; 1,如果有token => 渲染 
+  //如果没有token ,跳转到登录页
+  data() {
+    return{
+
+    }
+  },
+  beforeCreate() {
+    // 获取token
+    const token = localStorage.getItem('token')
+
+    if(!token) {
+      // token 没有登录 =>
+      this.$router.push({name: 'login'})
+    }
+    // if token有 => 继续渲染组件
+    
+  }
+};
 </script>
 
 <style scoped>
