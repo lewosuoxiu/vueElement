@@ -156,10 +156,11 @@ export default {
   height: 100%;
 }
 .header {
-  background-color: #b3c0d1;
+  background-color: #5595f9;
+  color: #fff;
 }
 .aside {
-  background-color: #d3dcd6;
+  background-color: ##fff; 
   /* height: 1000%; */
 }
 .heaeder-pic {
@@ -179,6 +180,6 @@ export default {
 .loginout {
   line-height: 60px;
   text-decoration: none;
-  color: black;
+  color: #fff;
 }
 </style>
