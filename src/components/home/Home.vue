@@ -20,7 +20,10 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside class="aside" width="200px">
+        <!-- 侧边栏 -->
+        <!-- 开启路由模式 -->
         <el-menu
+        :router="true"
         :unique-opened="true"
         >
           <!-- 子菜单 -->
@@ -30,7 +33,7 @@
               <span>用户管理</span>
             </template>
             <!-- 子子菜单 -->
-            <el-menu-item index="1-1">
+            <el-menu-item index="users">
               <i class="el-icon-circle-check"></i>
               <span>用户列表</span>
             </el-menu-item>
@@ -107,6 +110,8 @@
 
       <el-main class="main">
         <!-- 主展示区域 -->
+        <!-- 路由写到这展示-->
+        <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>
