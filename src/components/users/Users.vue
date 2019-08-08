@@ -62,7 +62,7 @@ export default {
 
       query: "",
       pagenum: 1,
-      pagesize: 2,
+      pagesize: 20,
       // 表格里的数据
       userList: [],
       total: -1
