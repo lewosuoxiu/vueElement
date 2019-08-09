@@ -25,6 +25,7 @@
         <el-menu
         :router="true"
         :unique-opened="true"
+        background-color="#fff"
         >
           <!-- 子菜单 -->
           <el-submenu index="1">
@@ -46,12 +47,12 @@
               <span>权限管理</span>
             </template>
             <!-- 子子菜单 -->
-            <el-menu-item index="1-1">
+            <el-menu-item index="role">
               <i class="el-icon-circle-check"></i>
               <span>角色列表</span>
             </el-menu-item>
               <!-- 子子菜单 -->
-             <el-menu-item index="1-1">
+             <el-menu-item index="right">
               <i class="el-icon-circle-check"></i>
               <span>权限列表</span>
             </el-menu-item>
@@ -160,7 +161,7 @@ export default {
   color: #fff;
 }
 .aside {
-  background-color: ##fff; 
+  background-color: #fff; 
   /* height: 1000%; */
 }
 .heaeder-pic {
