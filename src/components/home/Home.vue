@@ -28,86 +28,20 @@
         background-color="#fff"
         >
           <!-- 子菜单 -->
-          <el-submenu index="1">
+          <el-submenu :index="'' + item1.order" v-for="(item1, index) in menus" :key="index">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item1.authName}}</span>
             </template>
             <!-- 子子菜单 -->
-            <el-menu-item index="users">
+            <el-menu-item :index="item2.path" v-for="(item2, index) in item1.children" :key="index">
               <i class="el-icon-circle-check"></i>
-              <span>用户列表</span>
-            </el-menu-item>
-          </el-submenu>
-
-          <!-- 子菜单 -->
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>权限管理</span>
-            </template>
-            <!-- 子子菜单 -->
-            <el-menu-item index="role">
-              <i class="el-icon-circle-check"></i>
-              <span>角色列表</span>
-            </el-menu-item>
-              <!-- 子子菜单 -->
-             <el-menu-item index="right">
-              <i class="el-icon-circle-check"></i>
-              <span>权限列表</span>
-            </el-menu-item>
-          </el-submenu>
-
-          <!-- 子菜单 -->
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>商品管理</span>
-            </template>
-            <!-- 子子菜单 -->
-            <el-menu-item index="1-1">
-              <i class="el-icon-circle-check"></i>
-              <span>商品列表</span>
-            </el-menu-item>
-            <!-- 子子菜单 -->
-            <el-menu-item index="1-1">
-              <i class="el-icon-circle-check"></i>
-              <span>分类参数</span>
-            </el-menu-item>
-            <!-- 子子菜单 -->
-            <el-menu-item index="1-1">
-              <i class="el-icon-circle-check"></i>
-              <span>商品分类</span>
-            </el-menu-item>
-          </el-submenu>
-
-          <!-- 子菜单 -->
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>订单管理</span>
-            </template>
-            <!-- 子子菜单 -->
-            <el-menu-item index="1-1">
-              <i class="el-icon-circle-check"></i>
-              <span>订单列表</span>
-            </el-menu-item>
-          </el-submenu>
-
-          <!-- 子菜单 -->
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>数据统计</span>
-            </template>
-            <!-- 子子菜单 -->
-            <el-menu-item index="1-1">
-              <i class="el-icon-circle-check"></i>
-              <span>订单列表</span>
+              <span>{{item2.authName}}</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
+         
 
       <el-main class="main">
         <!-- 主展示区域 -->
@@ -125,20 +59,34 @@ export default {
   //如果没有token ,跳转到登录页
   data() {
     return{
-
+      menus: [],
     }
   },
   beforeCreate() {
     // 获取token
-    const token = localStorage.getItem('token')
+    // const token = localStorage.getItem('token')
 
-    if(!token) {
-      // token 没有登录 =>
-      this.$router.push({name: 'login'})
-    }
-    // if token有 => 继续渲染组件
+    // if(!token) {
+    //   // token 没有登录 =>
+    //   this.$router.push({name: 'login'})
+    // }
+    // // if token有 => 继续渲染组件
   },
+  created() {
+    this.getMenus();
+  }, 
   methods: {
+    // 获取导航数据
+    async getMenus() {
+       // token请求头
+      const AUTH_TOKEN = localStorage.getItem("token");
+      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+
+      const res = await this.$http.get(`menus`)
+      // console.log(res);
+      this.menus = res.data.data;
+      console.log(this.menus);
+    },
     // 退出登录
     handleSignout() {
       // 1.0清除token
