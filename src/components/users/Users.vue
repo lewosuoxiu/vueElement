@@ -9,10 +9,16 @@
     <!-- 2，搜索 -->
     <el-row class="searchRow">
       <el-col>
-        <el-input placeholder="请输入内容" v-model="query" class="inputSearch">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input
+          @clear="loadUserList()"
+          clearable
+          placeholder="请输入内容"
+          v-model="query"
+          class="inputSearch"
+        >
+          <el-button @click="searchUser()" slot="append" icon="el-icon-search"></el-button>
         </el-input>
-        <el-button type="primary">添加用户</el-button>
+        <el-button type="primary" @click="showAddUser()">添加用户</el-button>
       </el-col>
     </el-row>
 
@@ -53,6 +59,32 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
+
+    <!-- 对话框 -->
+    <!-- 添加用户的对话框 -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+         <el-form-item label="密码" label-width="100px">
+          <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+         <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+         <el-form-item label="电话" label-width="100px" >
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+       
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+        <el-button type="primary" @click="addUser()">确 定</el-button>
+      </div>
+    </el-dialog>
+
+
   </el-card>
 </template>
 
@@ -74,26 +106,71 @@ export default {
       pagesize: 2,
       // 表格里的数据
       userList: [],
-      total: -1
-    };
+      total: -1,
+       // 添加对话框的属性
+      dialogFormVisibleAdd: false,
+      form: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: '',
+      }
+    }
+
   },
   created() {
     this.getUserList();
   },
   methods: {
+    // 添加用户 -- 发送请求
+    async addUser() {
+      // 关闭对话框
+      this.dialogFormVisibleAdd = false;
+
+      const res = await this.$http.post(`users`, this.form)
+      console.log(res);
+      const {meta: {status, msg}, data} = res.data;
+      if(status === 201) {
+        // 1,提示成功
+        this.$message.success(msg)
+        // 2，关闭对话框
+        // 3，更新视图
+        this.getUserList();
+        // 4，清空文本框
+        // this.form.username = ''
+        this.form = {}
+      } else {
+        this.$message.warning(msg)
+      }
+    },
+    // 添加用户 --显示对话框
+    showAddUser() {
+      this.dialogFormVisibleAdd = true;
+    },
+
+    // 清空输入框，重新获取数据
+    loadUserList() {
+      this.getUserList();
+    },
+    // 搜索用户
+    searchUser() {
+      console.log("aaaaaaa");
+      this.getUserList();
+    },
+
     // 分页相关的方法
-     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.pagesize = val //点击时候传入相应的条数
-        // this.pagenum = 1 //重置页面为1
-        this.getUserList() //重新获取数据
-      },
-      handleCurrentChange(val) {
-        // 切换页码的时候，使用
-        console.log(`当前页: ${val}`);
-        this.pagenum = val
-        this.getUserList()
-      },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pagesize = val; //点击时候传入相应的条数
+      // this.pagenum = 1 //重置页面为1
+      this.getUserList(); //重新获取数据
+    },
+    handleCurrentChange(val) {
+      // 切换页码的时候，使用
+      console.log(`当前页: ${val}`);
+      this.pagenum = val;
+      this.getUserList();
+    },
 
     // 获取用户列表的请求
     async getUserList() {
@@ -108,7 +185,8 @@ export default {
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
       );
-      console.log(res);
+      // Request URL: http://localhost:8888/api/private/v1/users?query=a&pagenum=1&pagesize=2 ,最后生成的url
+      // console.log(res);
 
       // 解构赋值，得到data里的数据
       const {
