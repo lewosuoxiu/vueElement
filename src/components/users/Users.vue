@@ -44,6 +44,15 @@
       </el-table-column>
     </el-table>
     <!-- 4，分页 -->
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagenum"
+      :page-sizes="[2, 4, 6, 8]"
+      :page-size="2"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination>
   </el-card>
 </template>
 
@@ -62,7 +71,7 @@ export default {
 
       query: "",
       pagenum: 1,
-      pagesize: 20,
+      pagesize: 2,
       // 表格里的数据
       userList: [],
       total: -1
@@ -72,6 +81,20 @@ export default {
     this.getUserList();
   },
   methods: {
+    // 分页相关的方法
+     handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.pagesize = val //点击时候传入相应的条数
+        // this.pagenum = 1 //重置页面为1
+        this.getUserList() //重新获取数据
+      },
+      handleCurrentChange(val) {
+        // 切换页码的时候，使用
+        console.log(`当前页: ${val}`);
+        this.pagenum = val
+        this.getUserList()
+      },
+
     // 获取用户列表的请求
     async getUserList() {
       // query	查询参数	可以为空
@@ -99,6 +122,7 @@ export default {
         this.total = total;
         // 3，提示
         this.$message.success(msg);
+        this.pagenum = 1; //发请求成功后，把页码改为1
       } else {
         // 提示
         this.$message.warning(msg);
