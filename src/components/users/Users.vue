@@ -44,7 +44,14 @@
           <el-row>
             <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
             <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
-            <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+            <el-button
+              size="mini"
+              plain
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              @click="showDeleUser(scope.row.id)"
+            ></el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -67,24 +74,21 @@
         <el-form-item label="用户名" label-width="100px">
           <el-input v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
-         <el-form-item label="密码" label-width="100px">
+        <el-form-item label="密码" label-width="100px">
           <el-input v-model="form.password" autocomplete="off"></el-input>
         </el-form-item>
-         <el-form-item label="邮箱" label-width="100px">
+        <el-form-item label="邮箱" label-width="100px">
           <el-input v-model="form.email" autocomplete="off"></el-input>
         </el-form-item>
-         <el-form-item label="电话" label-width="100px" >
+        <el-form-item label="电话" label-width="100px">
           <el-input v-model="form.mobile" autocomplete="off"></el-input>
         </el-form-item>
-       
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
         <el-button type="primary" @click="addUser()">确 定</el-button>
       </div>
     </el-dialog>
-
-
   </el-card>
 </template>
 
@@ -107,40 +111,79 @@ export default {
       // 表格里的数据
       userList: [],
       total: -1,
-       // 添加对话框的属性
+      // 添加对话框的属性
       dialogFormVisibleAdd: false,
       form: {
-        username: '',
-        password: '',
-        email: '',
-        mobile: '',
+        username: "",
+        password: "",
+        email: "",
+        mobile: ""
       }
-    }
-
+    };
   },
   created() {
     this.getUserList();
   },
   methods: {
+    // 删除用户
+    showDeleUser(userId) {
+      this.$confirm("删除用户？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          // 发送删除的请求 :id ====》 用户id
+          // 1，data中找UserId
+          // 2，把userID以showDeleUser参数形式传进来
+          const res = await this.$http.delete(`users/${userId}`)
+          console.log(res)
+          
+          if(res.data.meta.status === 200) {
+            // 更新视图
+            this.getUserList()
+            // 删除成功提示
+              this.$message({
+              type: "success",
+              message: res.data.meta.msg
+            });
+          }
+
+          // this.$message({
+          //   type: "success",
+          //   message: "删除成功!"
+          // });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+
     // 添加用户 -- 发送请求
     async addUser() {
       // 关闭对话框
       this.dialogFormVisibleAdd = false;
 
-      const res = await this.$http.post(`users`, this.form)
+      const res = await this.$http.post(`users`, this.form);
       console.log(res);
-      const {meta: {status, msg}, data} = res.data;
-      if(status === 201) {
+      const {
+        meta: { status, msg },
+        data
+      } = res.data;
+      if (status === 201) {
         // 1,提示成功
-        this.$message.success(msg)
+        this.$message.success(msg);
         // 2，关闭对话框
         // 3，更新视图
         this.getUserList();
         // 4，清空文本框
         // this.form.username = ''
-        this.form = {}
+        this.form = {};
       } else {
-        this.$message.warning(msg)
+        this.$message.warning(msg);
       }
     },
     // 添加用户 --显示对话框
