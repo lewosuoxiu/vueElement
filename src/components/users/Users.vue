@@ -23,7 +23,7 @@
     </el-row>
 
     <!-- 3，表格 -->
-    <el-table :data="userList" style="width: 100%">
+    <el-table height="450px" :data="userList" style="width: 100%">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="username" label="姓名" width="80"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
@@ -42,13 +42,15 @@
       <el-table-column prop="address" label="操作">
         <template slot-scope="scope">
           <el-row>
-            <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button 
+            size="mini" plain type="primary"
+             icon="el-icon-edit" circle 
+             @click="showEditUser(scope.row)"
+            ></el-button>
             <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
             <el-button
-              size="mini"
-              plain
-              type="danger"
-              icon="el-icon-delete"
+              size="mini" plain
+              type="danger"  icon="el-icon-delete"
               circle
               @click="showDeleUser(scope.row.id)"
             ></el-button>
@@ -89,6 +91,25 @@
         <el-button type="primary" @click="addUser()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 编辑用户对话框 -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleEdit">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input disabled v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="editUser()">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -112,19 +133,38 @@ export default {
       userList: [],
       total: -1,
       // 添加对话框的属性
-      dialogFormVisibleAdd: false,
+      dialogFormVisibleAdd: false, //增加用户对话框
+      dialogFormVisibleEdit: false, //编辑用户的对话框
       form: {
         username: "",
         password: "",
         email: "",
         mobile: ""
-      }
+      },
+      currUserId: -1,
     };
   },
   created() {
     this.getUserList();
   },
   methods: {
+    // 编辑用户，发送请求
+    async editUser() {
+      //users/:id
+      const res = await this.$http.put(`users/${this.form.id}`,this.form )
+      // console.log(res);
+      // 关闭对话框
+      this.dialogFormVisibleEdit = false
+      // 更新视图
+      this.getUserList();
+
+    },
+    // 编辑用户的对话框
+    showEditUser(user) {
+      // console.log(user);
+      this.form = user
+      this.dialogFormVisibleEdit = true;
+    },
     // 删除用户
     showDeleUser(userId) {
       this.$confirm("删除用户？", "提示", {
@@ -136,14 +176,15 @@ export default {
           // 发送删除的请求 :id ====》 用户id
           // 1，data中找UserId
           // 2，把userID以showDeleUser参数形式传进来
-          const res = await this.$http.delete(`users/${userId}`)
-          console.log(res)
-          
-          if(res.data.meta.status === 200) {
+          const res = await this.$http.delete(`users/${userId}`);
+          console.log(res);
+
+          if (res.data.meta.status === 200) {
+            this.pagenum = 1;
             // 更新视图
-            this.getUserList()
+            this.getUserList();
             // 删除成功提示
-              this.$message({
+            this.$message({
               type: "success",
               message: res.data.meta.msg
             });
@@ -188,6 +229,7 @@ export default {
     },
     // 添加用户 --显示对话框
     showAddUser() {
+      this.form = {}
       this.dialogFormVisibleAdd = true;
     },
 
