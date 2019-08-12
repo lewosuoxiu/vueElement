@@ -35,25 +35,42 @@
 
       <el-table-column label="用户状态">
         <template slot-scope="scope">
-          <el-switch 
-          @change="changeState(scope.row)"
-          v-model="scope.row.mg_state" 
-          active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch
+            @change="changeState(scope.row)"
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
         </template>
       </el-table-column>
 
       <el-table-column prop="address" label="操作">
         <template slot-scope="scope">
           <el-row>
-            <el-button 
-            size="mini" plain type="primary"
-             icon="el-icon-edit" circle 
-             @click="showEditUser(scope.row)"
-            ></el-button>
-            <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+            <!-- 编辑用户 -->
             <el-button
-              size="mini" plain
-              type="danger"  icon="el-icon-delete"
+              size="mini"
+              plain
+              type="primary"
+              icon="el-icon-edit"
+              circle
+              @click="showEditUser(scope.row)"
+            ></el-button>
+            <!-- 设置用户权限 -->
+            <el-button
+              @click="showSetRole(scope.row)"
+              size="mini"
+              plain
+              type="success"
+              icon="el-icon-check"
+              circle
+            ></el-button>
+            <!-- 删除用户 -->
+            <el-button
+              size="mini"
+              plain
+              type="danger"
+              icon="el-icon-delete"
               circle
               @click="showDeleUser(scope.row.id)"
             ></el-button>
@@ -113,6 +130,34 @@
         <el-button type="primary" @click="editUser()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 分配角色的对话框 -->
+    <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRole">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <!-- <el-input v-model="form.name" autocomplete="off"></el-input>
+           -->
+           {{curUserName}}
+        </el-form-item>
+        <el-form-item label="角色" label-width="100px">
+          <!-- {{curRoleId}} -->
+          <!-- 下拉框绑定元素 -->
+          <el-select v-model="curRoleId" >
+            <el-option label="请选择" :value="-1"></el-option>
+            <el-option :label="item.roleName" :value="item.id"
+            v-for="(item, i) in roles" :key="i"
+            > 
+            </el-option>
+            <!-- <el-option label="区域二" value="beijing"></el-option> -->
+            <!-- 如果select的绑定的数据的值和option的value一样，就会显示该option的label值 -->
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -138,41 +183,77 @@ export default {
       // 添加对话框的属性
       dialogFormVisibleAdd: false, //增加用户对话框
       dialogFormVisibleEdit: false, //编辑用户的对话框
+      dialogFormVisibleRole: false, //分配角色的对话框
       form: {
         username: "",
         password: "",
         email: "",
         mobile: ""
       },
+      // 当前用户ID
       currUserId: -1,
+      // 分配角色
+      curRoleId: -1,
+      curUserName: '',//当前显示的用户名
+      roles: [], //保存所有的角色数据
+
+
     };
   },
   created() {
     this.getUserList();
   },
   methods: {
+    // 分配角色，发送请求
+    async setRole() {
+      // user/:id/role
+      // :id 要修改的用户id值
+      // 请求体中rid 修改的新值角色id
+      const res = await this.$http.put(`users/${this.currUserId}/role`, {
+        rid:this.curRoleId  //这个rid参数不能发在url中，请求文档中有说明的
+      })
+      console.log(res);
+    },
+    // 分配角色
+    async showSetRole(user) {
+      this.curUserName = user.username;
+      // 给currUserId赋值
+      this.currUserId = user.id;
+      // 获取所有的角色
+      const res1 = await this.$http.get(`roles`)
+      // console.log(res1);
+      this.roles = res1.data.data;
+
+      // 获取当前用户的角色Id
+      const res = await this.$http.get(`users/${user.id}`)
+      // console.log(res)
+      this.curRoleId = res.data.data.rid;
+
+      this.dialogFormVisibleRole = true; //分配角色打开对话框
+    },
     // 修改开关的状态
     async changeState(user) {
       // 发送请求
       //请求路径：users/:uId/state/:type
-      const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
-      console.log(res);
+      const res = await this.$http.put(
+        `users/${user.id}/state/${user.mg_state}`
+      );
+      // console.log(res);
     },
     // 编辑用户，发送请求
     async editUser() {
       //users/:id
-      const res = await this.$http.put(`users/${this.form.id}`,this.form )
+      const res = await this.$http.put(`users/${this.form.id}`, this.form);
       // console.log(res);
       // 关闭对话框
-      this.dialogFormVisibleEdit = false
+      this.dialogFormVisibleEdit = false;
       // 更新视图
       this.getUserList();
-
     },
     // 编辑用户的对话框
     showEditUser(user) {
       // console.log(user);
-      this.form = user
+      this.form = user;
       this.dialogFormVisibleEdit = true;
     },
     // 删除用户
@@ -187,7 +268,7 @@ export default {
           // 1，data中找UserId
           // 2，把userID以showDeleUser参数形式传进来
           const res = await this.$http.delete(`users/${userId}`);
-          console.log(res);
+          // console.log(res);
 
           if (res.data.meta.status === 200) {
             this.pagenum = 1;
@@ -219,7 +300,7 @@ export default {
       this.dialogFormVisibleAdd = false;
 
       const res = await this.$http.post(`users`, this.form);
-      console.log(res);
+      // console.log(res);
       const {
         meta: { status, msg },
         data
@@ -239,7 +320,7 @@ export default {
     },
     // 添加用户 --显示对话框
     showAddUser() {
-      this.form = {}
+      this.form = {};
       this.dialogFormVisibleAdd = true;
     },
 
@@ -249,20 +330,20 @@ export default {
     },
     // 搜索用户
     searchUser() {
-      console.log("aaaaaaa");
+      // console.log("aaaaaaa");
       this.getUserList();
     },
 
     // 分页相关的方法
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       this.pagesize = val; //点击时候传入相应的条数
       // this.pagenum = 1 //重置页面为1
       this.getUserList(); //重新获取数据
     },
     handleCurrentChange(val) {
       // 切换页码的时候，使用
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       this.pagenum = val;
       this.getUserList();
     },
