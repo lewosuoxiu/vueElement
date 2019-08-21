@@ -4,6 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
+// MyBread 其实是组件选项所在的对象
+import MyBread from '@/components/cuscom/myBread.vue' //全局导入自定义封装的面包屑组件
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/css/reset.css'
 
@@ -21,6 +23,8 @@ Vue.filter('fmtdate', (v) => {
   return moment(v).format('YYYY-MM-DD')
 })
 
+// 自定义面包屑-全局组件
+Vue.component(MyBread.name, MyBread)
 
 /* eslint-disable no-new */
 new Vue({

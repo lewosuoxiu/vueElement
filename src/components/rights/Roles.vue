@@ -60,16 +60,12 @@
       <el-table-column prop="address" label="操作">
         <template slot-scope="scope">
           <el-row>
-            <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button  type="primary"  >编辑</el-button>
             <el-button
               @click="showSetRight(scope.row)"
-              size="mini"
-              plain
               type="success"
-              icon="el-icon-check"
-              circle
-            ></el-button>
-            <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+            >权限设置</el-button>
+            <el-button  type="danger" >删除</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -174,6 +170,7 @@ export default {
       this.currRoleId = role.id;
 
       this.treelist = res.data.data;
+      console.log(this.treelist);
       // 把所有权限的创建到一个数组里
       // let arrtemp1 = [];
       // 三层嵌套循环
@@ -224,8 +221,8 @@ export default {
     },
     async getRoleList() {
       // token请求头
-      const AUTH_TOKEN = localStorage.getItem("token");
-      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      // const AUTH_TOKEN = localStorage.getItem("token");
+      // this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
       const res = await this.$http.get(`roles`);
       // console.log(res);

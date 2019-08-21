@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Login from '@/components/login/Login'
 import Home from '@/components/home/Home'
 import Users from '@/components/users/Users'
-import Right from '@/components/rights/Right'
+import Rights from '@/components/rights/Rights'
 import Roles from '@/components/rights/Roles'
 
 // 引入element 提示框
@@ -29,13 +29,13 @@ const router =  new Router({
           component: Users
         },
         {
-          name: 'right',
-          path: '/right',
-          component: Right
+          name: 'rights',
+          path: 'rights',
+          component: Rights
         },
         {
           name: 'roles',
-          path: '/roles',
+          path: 'roles',
           component: Roles
         },
       ]
