@@ -79,13 +79,13 @@ export default {
     // 获取导航数据
     async getMenus() {
        // token请求头
-      const AUTH_TOKEN = localStorage.getItem("token");
-      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      // const AUTH_TOKEN = localStorage.getItem("token");
+      // this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
       const res = await this.$http.get(`menus`)
       // console.log(res);
       this.menus = res.data.data;
-      console.log(this.menus);
+      // console.log(this.menus);
     },
     // 退出登录
     handleSignout() {
