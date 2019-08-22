@@ -150,7 +150,7 @@ export default {
     // 合并数组方法： 1， 创建新数组，遍历添加进去，
     // 方法2，arr1.concat(arr2)
     let arr = [...arr1, ...arr2]
-    console.log(arr)
+    // console.log(arr)
 
     const res = await this.$http.post(`roles/${this.currRoleId}/rights`, {rids: arr.join(',')})
     // console.log(res);
@@ -191,18 +191,20 @@ export default {
 
 
         /*------------------------- */
-        // 获取当前角色role的权限ID
+        // 获取当前角色role的当前的权限ID
        let arrtemp2 = [];
       // 三层嵌套循环
       role.children.forEach(item1 => {
-        arrtemp2.push(item1.id);
+        // arrtemp2.push(item1.id);
         item1.children.forEach(item2 => {
-          arrtemp2.push(item2.id);
+          // arrtemp2.push(item2.id);
           item2.children.forEach(item3 => {
             arrtemp2.push(item3.id);
           });
         });
       });
+      
+
       // console.log(arrtemp2);
       this.arrcheck = arrtemp2;
 
