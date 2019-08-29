@@ -7,6 +7,8 @@ import Rights from '@/components/rights/Rights'
 import Roles from '@/components/rights/Roles'
 import GoodsList from '@/components/goods/goodsList'
 import GoodsAdd from '@/components/goods/goodsAdd'
+import Params from '@/components/goods/params'
+import GoodsCate from '@/components/goods/goodsCate'
 
 // 引入element 提示框
 import {Message} from 'element-ui';
@@ -46,14 +48,24 @@ const router =  new Router({
           component: Roles
         },
         {
-          name: 'goods',
+          name: 'goods', //商品列表
           path: '/goods', //这儿的名字没有统一，不过没关系path路径改为后端传过来的数据渲染就行
           component: GoodsList
         },
         {
           name: 'goodsAdd',
-          path: '/goodsAdd',
+          path: '/goodsAdd', //添加商品
           component: GoodsAdd
+        },
+        {
+          name: 'params',
+          path: '/params', //分类参数
+          component: Params // 注意： 引入的组件名和地址名不一样的时候，这么用
+        },
+        {
+          name: 'categories',
+          path: '/categories',
+          component: GoodsCate
         },
       ]
     },

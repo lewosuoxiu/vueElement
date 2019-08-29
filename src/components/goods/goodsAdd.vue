@@ -38,7 +38,7 @@
             <el-input v-model="addForm.goods_number"></el-input>
           </el-form-item>
 
-          <!-- 节点选择器 -->
+          <!-- 选择器 -->
           <el-form-item label="商品分类">
             {{selectedOptions}}
             <el-cascader
