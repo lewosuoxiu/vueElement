@@ -213,16 +213,27 @@ export default {
 
       // }
          // 设置层级：
-      this.addForm.cat_level = this.selectedOptions.length
-      // 设置父分类Id：
-      if (this.selectedOptions.length === 0) {
-        // 如果没有选中任何父分类， 则 父分类Id为 0
-        this.addForm.cat_pid = 0
-      } else {
-        // 如果选中了父分类，则 把数组的最后一项，当作父分类
-        this.addForm.cat_pid = this.selectedOptions[this.selectedOptions.length - 1]
+      // this.addForm.cat_level = this.selectedOptions.length
+      // // 设置父分类Id：
+      // if (this.selectedOptions.length === 0) {
+      //   // 如果没有选中任何父分类， 则 父分类Id为 0
+      //   this.addForm.cat_pid = 0
+      // } else {
+      //   // 如果选中了父分类，则 把数组的最后一项，当作父分类
+      //   this.addForm.cat_pid = this.selectedOptions[this.selectedOptions.length - 1]
+      // }
+      // // 此处添加分类有点bug
+
+         if (this.selectedOptions.length === 0) {
+        this.addForm.cat_pid = 0;
+        this.addForm.cat_level = 0;
+      } else if (this.selectedOptions.length === 1) {
+        this.addForm.cat_pid = this.selectedOptions[0];
+        this.addForm.cat_level = 1;
+      } else if (this.selectedOptions.length === 2) {
+         this.addForm.cat_pid = this.selectedOptions[1];
+        this.addForm.cat_level = 2;
       }
-      // 此处添加分类有点bug
     },
   }
 };

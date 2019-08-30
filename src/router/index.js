@@ -9,6 +9,8 @@ import GoodsList from '@/components/goods/goodsList'
 import GoodsAdd from '@/components/goods/goodsAdd'
 import Params from '@/components/goods/params'
 import GoodsCate from '@/components/goods/goodsCate'
+import Orders from '@/components/order/orders'
+import Reports from '@/components/reports/reports'
 
 // 引入element 提示框
 import {Message} from 'element-ui';
@@ -66,6 +68,16 @@ const router =  new Router({
           name: 'categories',
           path: '/categories',
           component: GoodsCate
+        },
+        {
+          name: 'orders',
+          path: '/orders',
+          component: Orders  //商品订单
+        },
+        {
+          name: 'roports',
+          path: '/reports',
+          component: Reports  //报告
         },
       ]
     },
